@@ -1,10 +1,10 @@
-
 import streamlit as st
 import PyPDF2
 from rag_engine import split_text, build_faiss_index, retrieve_relevant_chunks, ask_gpt
-import openai
+from openai import OpenAI  # ✅ NEW import
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Securely load your OpenAI API key from Streamlit secrets
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # ✅ Updated client usage
 
 st.set_page_config(page_title="🧾 Legal RAG Summarizer", layout="wide")
 st.title("Legal Document Summarizer (with RAG)")
@@ -30,7 +30,6 @@ if uploaded_file:
         with st.spinner("Retrieving relevant sections..."):
             retrieved = retrieve_relevant_chunks(query, index, vectors, all_chunks)
             context = "\n\n".join(retrieved)
-            response = ask_gpt(query, context)
+            response = ask_gpt(query, context, client)  # ✅ Pass client
             st.markdown("### 📝 Response")
             st.write(response)
-    
