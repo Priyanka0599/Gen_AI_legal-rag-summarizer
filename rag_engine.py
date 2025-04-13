@@ -21,18 +21,9 @@ def retrieve_relevant_chunks(query, index, vectors, chunks, k=3):
     D, I = index.search(query_vec, k)
     return [chunks[i] for i in I[0]]
 
-def ask_gpt(query, context):
-    prompt = f"""You are a legal assistant.
-Use the following document excerpts to answer or summarize:
-
-Context:
-{context}
-
-Now, {query}
-"""
-    response = openai.chat.completions.create(
+def ask_gpt(query, context, client):
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[{"role": "user", "content": f"..."}],
         temperature=0.3
     )
-    return response.choices[0].message.content
